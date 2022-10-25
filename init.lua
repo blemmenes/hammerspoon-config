@@ -66,6 +66,8 @@ obsidian = appID('/Applications/Obsidian.app')
 RingCentral = appID('/Applications/RingCentral.app')
 Freedom = appID('/Applications/Freedom.app')
 VSCode = appID('/Applications/Visual Studio Code.app')
+braveBrowser = appID('/Applications/Brave Browser.app')
+
 
 -- Hyper.spoon
 App   = hs.application
@@ -91,6 +93,7 @@ Config.projects = hs.settings.get("secrets").toggl.projects
 
 require('spaces/support')
 require('spaces/support_call')
+require('spaces/research')
 require('spaces/garden')
 require('spaces/deep')
 require('spaces/meeting')
@@ -146,7 +149,6 @@ hs.alert.show("Config loaded")
 
 -- Browser stuff
 chromeBrowser = appID('/Applications/Google Chrome.app')
-braveBrowser = appID('/Applications/Brave Browser.app')
 workBraveProfile = "/Users/blemmenes/Library/Application Support/BraveSoftware/Brave-Browser/Profile 1"
 personalBraveProfile = "/Users/blemmenes/Library/Application Support/BraveSoftware/Brave-Browser/Default"
 workApp = appID('/Users/blemmenes/Applications/WebCatalog Apps/Work.app')

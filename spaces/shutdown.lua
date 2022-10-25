@@ -29,5 +29,6 @@ Config.funcs.shutdown = {
     -- screensaver
     -- hs.caffeinate.startScreensaver()
     hs.caffeinate.lockScreen()
+    hs.application.find(Freedom):kill()
   end
 }
