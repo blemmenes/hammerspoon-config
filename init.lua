@@ -94,6 +94,7 @@ Config.projects = hs.settings.get("secrets").toggl.projects
 require('spaces/support')
 require('spaces/support_call')
 require('spaces/research')
+require('spaces/communication')
 require('spaces/garden')
 require('spaces/deep')
 require('spaces/meeting')

@@ -1,6 +1,6 @@
 return {
-  ['com.microsoft.outlook'] = {
-    bundleID = 'com.microsoft.outlook',
+  ['com.microsoft.Outlook'] = {
+    bundleID = 'com.microsoft.Outlook',
     hyperKey = 'e',
     tags = {'communication', 'planning'},
     layouts = {
@@ -12,7 +12,7 @@ return {
     hyperKey = 'o',
     tags = {'research', 'notes', 'planning'},
     layouts = {
-      {nil, 1, hs.geometry.rect(0.6667, 0, .3334, 1)} -- right third
+      {nil, hs.screen.primaryScreen(), hs.geometry.rect(0.6667, 0, .3334, 1)} -- right third
     }
   },
   ['com.brave.Browser.app.cinhimbnkkaeohfgghhklpknlkffjgod'] = {
