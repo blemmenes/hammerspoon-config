@@ -47,6 +47,11 @@ function startApp(name)
   hs.application.open(name)
 end
 
+-- Determine daytime via LAT/LONG
+function isDaytime()
+  return hs.location.sunrise(43.13990611021352, -85.59645506496409, -5) < hs.timer.secondsSinceEpoch() and hs.timer.secondsSinceEpoch() < hs.location.sunset(43.13990611021352, -85.59645506496409, -5)
+end
+
 -- function to dump a table for debuging
 function dump(o)
   if type(o) == 'table' then
@@ -218,13 +223,15 @@ local headers = {["Authorization"] = hs.settings.get('secrets').smartthings.auth
 sleepWatcher = hs.caffeinate.watcher.new(function (eventType)
   if (usbAttachedDevicesLookUp("ErgoDox EZ")) then -- Check if docked
     if (eventType == hs.caffeinate.watcher.screensDidWake) then
-      if hs.timer.localTime() < hs.timer.seconds("21:00") then -- if before 9PM turn on all lights
+      -- if hs.timer.localTime() < hs.timer.seconds("21:00") then -- if before 9PM turn on all lights
+      -- If it's between sunset and sunrise turn on all the lights
+      if isDaytime() then
         hs.http.asyncPost("https://api.smartthings.com/v1/scenes/" .. scenes.office_on .. "/execute",
           nil,
           headers,
           function(http_number, body, headers)
           end)
-      else -- if after 9PM turn on just desk lights
+      else -- if outside of "daytime" just turn on desk lights
         hs.http.asyncPost("https://api.smartthings.com/v1/scenes/" .. scenes.office_late .. "/execute",
         nil,
         headers,
@@ -241,7 +248,7 @@ sleepWatcher = hs.caffeinate.watcher.new(function (eventType)
   end
 end)
 sleepWatcher:start()
-
+---
 
 -- Wifi automation
 Install:andUse("WiFiTransitions",
