@@ -4,13 +4,13 @@ table.insert(Config.spaces, {
   image = hs.image.imageFromAppBundle(RingCentral),
   funcs = 'meeting',
   togglProj = Config.projects.meetings,
-  togglDesc = "Meeting",
+  togglDesc = "Meeting"
   -- launch = {'planning'},
   -- blacklist = {'distraction', 'communication'},
-  layouts = {
-    {"Obsidian", nil, hs.screen.primaryScreen():name(), hs.geometry.rect(0.6667, 0, .3334, 1), 0, 0},
-    -- {ZendeskApp, nil, hs.screen.primaryScreen():name(), hs.geometry.rect(0, 0, .3334, 1), 0, 0}
-  }
+--   layouts = {
+--     {"Obsidian", nil, hs.screen.primaryScreen():name(), hs.geometry.rect(0.6667, 0, .3334, 1), 0, 0},
+--     -- {ZendeskApp, nil, hs.screen.primaryScreen():name(), hs.geometry.rect(0, 0, .3334, 1), 0, 0}
+--   }
 })
 
 Config.funcs.meeting = {

@@ -6,10 +6,10 @@ table.insert(Config.spaces, {
   blacklist = {'distraction'},
   intentRequired = true,
   funcs = 'deep',
-  layouts = {
-    {"Obsidian", nil, hs.screen.primaryScreen():name(), hs.geometry.rect(0.6667, 0, .3334, 1), 0, 0},
-    {VSCode, nil, hs.screen.primaryScreen():name(), hs.geometry.rect(0.3334, 0, 0.3334, 1), 0, 0}
-  }
+  -- layouts = {
+  --   {"Obsidian", nil, hs.screen.primaryScreen():name(), hs.geometry.rect(0.6667, 0, .3334, 1), 0, 0},
+  --   {VSCode, nil, hs.screen.primaryScreen():name(), hs.geometry.rect(0.3334, 0, 0.3334, 1), 0, 0}
+  -- }
 })
 
 Config.funcs.deep = {
