@@ -61,13 +61,19 @@ return {
     hyperKey = 'd',
     tags = {'communication', 'distraction', 'personal'},
     layouts = {
-      {nil, hs.screen'Built%-in', hs.layout.right50 
+      {nil, hs.screen'Built%-in', hs.layout.right50 }
     }
   },
   ['tv.plex.desktop'] = {
     bundleID = 'tv.plex.desktop',
-    hyperKey = 'd',
     tags = { 'distraction', 'personal'}
-    }
+  },
+  ['com.nvidia.gfnpc.mall'] = {
+    bundleID = 'com.nvidia.gfnpc.mall',
+    tags = { 'distraction', 'personal'}
+  },
+  ['com.epicgames.EpicGamesLauncher'] = {
+    bundleID = 'com.epicgames.EpicGamesLauncher',
+    tags = { 'distraction', 'personal'}
   }
 }
