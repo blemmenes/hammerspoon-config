@@ -10,9 +10,14 @@ spoon.SpoonInstall.use_syncinstall = true
 hs.application.enableSpotlightForNameSearches(true)
 Install=spoon.SpoonInstall
 hs.hotkey.bindSpec({ hyper, "y" }, hs.toggleConsole)
-hs.loadSpoon('Headspace')
+-- hs.loadSpoon('Headspace')
 hs.loadSpoon('Hyper')
+hs.loadSpoon('HyperModal')
 
+require("hs.ipc")
+-- Setup stackline
+stackline = require "stackline"
+stackline:init()
 
 -- Secrets for toggl/headspace integration
 local secrets = require('secrets')
@@ -68,11 +73,10 @@ end
 
 ZendeskApp = appID('/Users/blemmenes/Applications/WebCatalog Apps/Zendesk.app')
 obsidian = appID('/Applications/Obsidian.app')
-RingCentral = appID('/Applications/RingCentral.app')
 Freedom = appID('/Applications/Freedom.app')
 VSCode = appID('/Applications/Visual Studio Code.app')
 braveBrowser = appID('/Applications/Brave Browser.app')
-
+Warp = appID('/Applications/Warp.app')
 
 -- Hyper.spoon
 App   = hs.application
@@ -92,26 +96,26 @@ hs.fnutils.each(Config.applications, function(appConfig)
 end)
 
 -- configure spaces for headspace
-Config.spaces = {}
-Config.funcs = {}
-Config.projects = hs.settings.get("secrets").toggl.projects
+-- Config.spaces = {}
+-- Config.funcs = {}
+-- Config.projects = hs.settings.get("secrets").toggl.projects
 
-require('spaces/support')
-require('spaces/support_call')
-require('spaces/research')
-require('spaces/communication')
-require('spaces/garden')
-require('spaces/deep')
-require('spaces/meeting')
-require('spaces/play')
-require('spaces/shutdown')
+-- require('spaces/support')
+-- require('spaces/support_call')
+-- require('spaces/research')
+-- require('spaces/communication')
+-- require('spaces/garden')
+-- require('spaces/deep')
+-- require('spaces/meeting')
+-- require('spaces/play')
+-- require('spaces/shutdown')
 
 -- Headspace.spoon
-spoon.Headspace:start()
-               :loadConfig(Config)
-               :setTogglKey(hs.settings.get('secrets').toggl.key)
+-- spoon.Headspace:start()
+--                :loadConfig(Config)
+--                :setTogglKey(hs.settings.get('secrets').toggl.key)
 
-Hyper:bind({}, 'l', nil, spoon.Headspace.choose)
+-- Hyper:bind({}, 'l', nil, spoon.Headspace.choose)
 
 
 -- Autmatic reload when hammerspoon config changes
@@ -221,7 +225,8 @@ local scenes = hs.settings.get("secrets").smartthings.scenes
 local headers = {["Authorization"] = hs.settings.get('secrets').smartthings.auth}
 
 sleepWatcher = hs.caffeinate.watcher.new(function (eventType)
-  if (usbAttachedDevicesLookUp("ErgoDox EZ")) then -- Check if docked
+    if (usbAttachedDevicesLookUp("HX3PD Hub")) then -- Check if docked
+    -- if (hs.screen'Acer':name()) then -- Check if docked
     if (eventType == hs.caffeinate.watcher.screensDidWake) then
       -- if hs.timer.localTime() < hs.timer.seconds("21:00") then -- if before 9PM turn on all lights
       -- If it's between sunset and sunrise turn on all the lights
@@ -322,36 +327,36 @@ Install:andUse("BrewInfo",
 
 
 -- AutoLayout.spoon testing
-hs.loadSpoon('AutoLayout')
-local autolayout = spoon.AutoLayout
+-- hs.loadSpoon('AutoLayout')
+-- local autolayout = spoon.AutoLayout
 
-local layouts = {}
--- build a table of layouts for AutoLayout from Config
-hs.fnutils.map(Config.applications, function(app_config)
-  local bundleID = app_config['bundleID']
-  if app_config.layouts then
-    hs.fnutils.map(app_config.layouts, function(rule)
-      local title_pattern, screen, layout = rule[1], rule[2], rule[3]
-      table.insert(layouts,
-        {
-          hs.application.get(bundleID),                  -- application name
-          title_pattern,                                 -- window title
-          -- function() autolayout.whichScreen(screen) end, -- screen
-          autolayout.whichScreen(screen), -- screen
-          layout,                                        -- layout
-          nil,
-          nil
-        }
-      )
-    end)
-  end
-end)
+-- local layouts = {}
+-- -- build a table of layouts for AutoLayout from Config
+-- hs.fnutils.map(Config.applications, function(app_config)
+--   local bundleID = app_config['bundleID']
+--   if app_config.layouts then
+--     hs.fnutils.map(app_config.layouts, function(rule)
+--       local title_pattern, screen, layout = rule[1], rule[2], rule[3]
+--       table.insert(layouts,
+--         {
+--           hs.application.get(bundleID),                  -- application name
+--           title_pattern,                                 -- window title
+--           function() autolayout.whichScreen(screen) end, -- screen
+--           -- autolayout.whichScreen(screen), -- screen
+--           layout,                                        -- layout
+--           nil,
+--           nil
+--         }
+--       )
+--     end)
+--   end
+-- end)
 
-autolayout
-:setDefault(layouts)
-:start()
+-- autolayout
+-- :setDefault(layouts)
+-- :start()
 
-Hyper:bind({}, 'return', nil, autolayout.autoLayout)
+-- Hyper:bind({}, 'return', nil, autolayout.autoLayout)
 
 
 

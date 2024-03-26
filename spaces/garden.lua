@@ -7,10 +7,10 @@ table.insert(Config.spaces, {
   -- togglDesc = "Support Call",
   launch = {'planning'},
   blacklist = {'distraction' },
-  -- layouts = {
-  --   {"Obsidian", nil, hs.screen.primaryScreen():name(), hs.geometry.rect(0.6667, 0, .3334, 1), 0, 0},
-  --   {ZendeskApp, nil, hs.screen.primaryScreen():name(), hs.geometry.rect(0, 0, .3334, 1), 0, 0}
-  -- }
+  layouts = {
+    {"Obsidian", nil, hs.screen'Acer':name(), hs.layout.right50, 0, 0},
+    {"Slack", nil, hs.screen'Built%-in':name(), hs.layout.right50, 0, 0}
+  }
 })
 
 Config.funcs.garden = {
