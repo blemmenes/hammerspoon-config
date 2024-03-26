@@ -9,15 +9,142 @@ hs.loadSpoon("SpoonInstall")
 spoon.SpoonInstall.use_syncinstall = true
 hs.application.enableSpotlightForNameSearches(true)
 Install=spoon.SpoonInstall
-hs.hotkey.bindSpec({ hyper, "y" }, hs.toggleConsole)
+-- hs.hotkey.bindSpec({ hyper, "y" }, hs.toggleConsole)
 -- hs.loadSpoon('Headspace')
 hs.loadSpoon('Hyper')
 hs.loadSpoon('HyperModal')
+
+
+
 
 require("hs.ipc")
 -- Setup stackline
 stackline = require "stackline"
 stackline:init()
+
+Hyper = spoon.Hyper
+Hyper:bindHotKeys({hyperKey = {{}, 'F19'}})
+
+
+
+-- https://github.com/dmitriiminaev/Hammerspoon-HyperModal/blob/master/.hammerspoon/yabai.lua
+local yabai = function(args, completion)
+  local yabai_output = ""
+  local yabai_error = ""
+  -- Runs in background very fast
+  local yabai_task = hs.task.new("/Users/blemmenes/.nix-profile/bin/yabai", function(err, stdout, stderr)
+    print()
+  end, function(task, stdout, stderr)
+      -- print("stdout:"..stdout, "stderr:"..stderr)
+      if stdout ~= nil then
+        yabai_output = yabai_output .. stdout
+      end
+      if stderr ~= nil then
+        yabai_error = yabai_error .. stderr
+      end
+      return true
+    end, args)
+  if type(completion) == "function" then
+    yabai_task:setCallback(function()
+      completion(yabai_output, "yabai_error/Users/blemmenes/.nix-profile/bin/yabai")
+    end)
+  end
+  yabai_task:start()
+end
+
+
+HyperModal = spoon.HyperModal
+HyperModal
+  :start()
+  :bind('', "1", function()
+    yabai({"-m", "window", "--swap", "first"})
+    HyperModal:exit()
+  end)
+  :bind('', "z", function()
+    yabai({"-m", "window", "--toggle", "zoom-parent"})
+    HyperModal:exit()
+  end)
+  :bind('', "v", function()
+    yabai({"-m", "space", "--mirror", "y-axis"})
+    HyperModal:exit()
+  end)
+  :bind('', "x", function()
+    yabai({"-m", "window", "--toggle", "split"})
+    HyperModal:exit()
+  end)
+  :bind('', "space", function()
+    yabai({"-m", "window", "--toggle", "zoom-fullscreen"})
+    HyperModal:exit()
+  end)
+  :bind('', "h", function()
+    yabai({"-m", "window", "--swap", "west"})
+    HyperModal:exit()
+  end)
+  :bind('', "j", function()
+    yabai({"-m", "window", "--swap", "south"})
+    HyperModal:exit()
+  end)
+  :bind('', "k", function()
+    yabai({"-m", "window", "--swap", "north"})
+    HyperModal:exit()
+  end)
+  :bind('', "l", function()
+    yabai({"-m", "window", "--swap", "east"})
+    HyperModal:exit()
+  end)
+  :bind({"alt"}, "h", function()
+    yabai({"-m", "window", "--warp", "west"})
+    HyperModal:exit()
+  end)
+  :bind({"alt"}, "j", function()
+    yabai({"-m", "window", "--warp", "south"})
+    HyperModal:exit()
+  end)
+  :bind({"alt"}, "k", function()
+    yabai({"-m", "window", "--warp", "north"})
+    HyperModal:exit()
+  end)
+  :bind({"alt"}, "l", function()
+    yabai({"-m", "window", "--warp", "east"})
+    HyperModal:exit()
+  end)
+  :bind({'shift'}, "l", function()
+    yabai({"-m", "window", "--display", "east"})
+    HyperModal:exit()
+  end)
+  :bind({'shift'}, "h", function()
+    yabai({"-m", "window", "--display", "west"})
+    HyperModal:exit()
+  end)
+  :bind("", "s", function()
+    yabai({"-m", "window", "--stack", "mouse"})
+    HyperModal:exit()
+  end)
+  :bind('', "r", function()
+    yabai({"-m", "space", "--balance"})
+    HyperModal:exit()
+  end)
+  :bind({"shift"}, "b", function()
+    yabai({"-m", "space", "--layout", "stack"})
+    HyperModal:exit()
+  end)
+  :bind("", "b", function()
+    yabai({"-m", "space", "--layout", "bsp"})
+    HyperModal:exit()
+  end)
+  :bind('', ';', function()
+    hs.urlevent.openURL("raycast://extensions/raycast/system/toggle-system-appearance")
+    HyperModal:exit()
+  end)
+
+Hyper:bind({}, 'y', function() HyperModal:toggle() end)
+
+
+
+
+
+
+
 
 -- Secrets for toggl/headspace integration
 local secrets = require('secrets')
@@ -80,9 +207,6 @@ Warp = appID('/Applications/Warp.app')
 
 -- Hyper.spoon
 App   = hs.application
-Hyper = spoon.Hyper
-
-Hyper:bindHotKeys({hyperKey = {{}, 'F19'}})
 
 hs.fnutils.each(Config.applications, function(appConfig)
   if appConfig.hyperKey then
