@@ -14,9 +14,6 @@ Install=spoon.SpoonInstall
 hs.loadSpoon('Hyper')
 hs.loadSpoon('HyperModal')
 
-
-
-
 require("hs.ipc")
 -- Setup stackline
 stackline = require "stackline"
@@ -25,8 +22,42 @@ stackline:init()
 Hyper = spoon.Hyper
 Hyper:bindHotKeys({hyperKey = {{}, 'F19'}})
 
+local shares = {
+  { sharePath = "smb://sinkhole.local/Backups", mountPoint = "/Volumes/Backups" },
+  { sharePath = "smb://sinkhole.local/incoming", mountPoint = "/Volumes/incoming" },
+  { sharePath = "smb://sinkhole.local/Media", mountPoint = "/Volumes/Media" },
+}
+-- Function to mount all network shares in the list ----------------------------------
+function mountNetworkShares()
+  for _, share in ipairs(shares) do
+      -- Check if the mount point exists
+      if hs.fs.attributes(share.mountPoint) then
+          hs.alert("Share already mounted: " .. share.mountPoint)
+      else
+          -- AppleScript to mount the share without prompting for credentials
+          local script = [[
+              tell application "Finder"
+                  try
+                      mount volume "]] .. share.sharePath .. [["
+                  on error errMsg
+                      return "Error: " & errMsg
+                  end try
+              end tell
+          ]]
+          
+          -- Execute the AppleScript
+          local success, output, _ = hs.osascript.applescript(script)
+          if success then
+              hs.alert("Mounted: " .. share.mountPoint)
+          else
+              hs.alert("Failed to mount " .. share.mountPoint .. ": " .. output)
+          end
+      end
+  end
+end
+-- Function to mount all network shares in the list ----------------------------------
 
-
+-- yabai window management
 -- https://github.com/dmitriiminaev/Hammerspoon-HyperModal/blob/master/.hammerspoon/yabai.lua
 local yabai = function(args, completion)
   local yabai_output = ""
@@ -52,7 +83,7 @@ local yabai = function(args, completion)
   yabai_task:start()
 end
 
-
+-- yabai keybindings
 HyperModal = spoon.HyperModal
 HyperModal
   :start()
@@ -62,6 +93,10 @@ HyperModal
   end)
   :bind('', "z", function()
     yabai({"-m", "window", "--toggle", "zoom-parent"})
+    HyperModal:exit()
+  end)
+  :bind('', "f", function()
+    yabai({"-m", "window", "--toggle", "float", "--grid", "4:4:1:1:2:2"})
     HyperModal:exit()
   end)
   :bind('', "v", function()
@@ -120,6 +155,14 @@ HyperModal
     yabai({"-m", "window", "--stack", "mouse"})
     HyperModal:exit()
   end)
+  :bind('', "n", function()
+    yabai({"-m", "window", "--focus", "stack.next"})
+    HyperModal:exit()
+  end)
+  :bind('', "p", function()
+    yabai({"-m", "window", "--focus", "stack.prev"})
+    HyperModal:exit()
+  end)
   :bind('', "r", function()
     yabai({"-m", "space", "--balance"})
     HyperModal:exit()
@@ -138,13 +181,6 @@ HyperModal
   end)
 
 Hyper:bind({}, 'y', function() HyperModal:toggle() end)
-
-
-
-
-
-
-
 
 -- Secrets for toggl/headspace integration
 local secrets = require('secrets')
@@ -263,13 +299,10 @@ Install:andUse("FadeLogo",
                }
 )
 
-
-
-
 -- Automatic eject on sleep
 Install:andUse("EjectMenu", {
   config = {
-    eject_on_lid_close = false,
+    eject_on_lid_close = true,
     eject_on_sleep = true,
     show_in_menubar = true,
     notify = true,
@@ -349,10 +382,11 @@ local scenes = hs.settings.get("secrets").smartthings.scenes
 local headers = {["Authorization"] = hs.settings.get('secrets').smartthings.auth}
 
 sleepWatcher = hs.caffeinate.watcher.new(function (eventType)
-    if (usbAttachedDevicesLookUp("HX3PD Hub")) then -- Check if docked
-    -- if (hs.screen'Acer':name()) then -- Check if docked
+    if (usbAttachedDevicesLookUp("HX3PD Hub")) then -- Check if docked by looking for USB hub
+    -- if (hs.screen'Acer':name()) then -- Check if docked by lookihng for monitor
     if (eventType == hs.caffeinate.watcher.screensDidWake) then
-      -- if hs.timer.localTime() < hs.timer.seconds("21:00") then -- if before 9PM turn on all lights
+      -- Mount network shares 30 seconds after waking
+      hs.timer.doAfter(30, mountNetworkShares)
       -- If it's between sunset and sunrise turn on all the lights
       if isDaytime() then
         hs.http.asyncPost("https://api.smartthings.com/v1/scenes/" .. scenes.office_on .. "/execute",
@@ -428,27 +462,6 @@ Install:andUse("KSheet", {
     toggle = { hyper, "k" }
   }
 })
-
-
--- Seems to be not looking up correctly
-Install:andUse("BrewInfo",
-               {
-                 config = {
-                   brew_info_style = {
-                    --  textFont = "Inconsolata",
-                     textSize = 14,
-                     radius = 10 }
-                 },
-                 hotkeys = {
-                   -- brew info
-                   show_brew_info = {hyper, "b"},
-                   open_brew_url = {meh, "b"},
-                 },
-                 loglevel = 'debug'
-               }
-)
-
-
 
 -- AutoLayout.spoon testing
 -- hs.loadSpoon('AutoLayout')
