@@ -22,41 +22,6 @@ stackline:init()
 Hyper = spoon.Hyper
 Hyper:bindHotKeys({hyperKey = {{}, 'F19'}})
 
-local shares = {
-  { sharePath = "smb://sinkhole.local/Backups", mountPoint = "/Volumes/Backups" },
-  { sharePath = "smb://sinkhole.local/incoming", mountPoint = "/Volumes/incoming" },
-  { sharePath = "smb://sinkhole.local/Media", mountPoint = "/Volumes/Media" },
-}
--- Function to mount all network shares in the list ----------------------------------
-function mountNetworkShares()
-  for _, share in ipairs(shares) do
-      -- Check if the mount point exists
-      if hs.fs.attributes(share.mountPoint) then
-          hs.alert("Share already mounted: " .. share.mountPoint)
-      else
-          -- AppleScript to mount the share without prompting for credentials
-          local script = [[
-              tell application "Finder"
-                  try
-                      mount volume "]] .. share.sharePath .. [["
-                  on error errMsg
-                      return "Error: " & errMsg
-                  end try
-              end tell
-          ]]
-          
-          -- Execute the AppleScript
-          local success, output, _ = hs.osascript.applescript(script)
-          if success then
-              hs.alert("Mounted: " .. share.mountPoint)
-          else
-              hs.alert("Failed to mount " .. share.mountPoint .. ": " .. output)
-          end
-      end
-  end
-end
--- Function to mount all network shares in the list ----------------------------------
-
 -- yabai window management
 -- https://github.com/dmitriiminaev/Hammerspoon-HyperModal/blob/master/.hammerspoon/yabai.lua
 local yabai = function(args, completion)
@@ -190,6 +155,17 @@ Config = {}
 Config.applications = require('configApplications')
 
 -- Helper functions
+-- function pingTest(server, callback)
+--   hs.network.ping(tostring(server), 1, 1, 1, "any", function(_, message)
+--       dump(message)
+--       if message == "received" then
+--           callback(true)
+--       else
+--           callback(false)
+--       end
+--   end)
+-- end
+
 function appID(app)
   return hs.application.infoForBundlePath(app)['CFBundleIdentifier']
 end
@@ -277,6 +253,41 @@ end)
 
 -- Hyper:bind({}, 'l', nil, spoon.Headspace.choose)
 
+-- Function to mount all network shares in the list ----------------------------------
+local shares = {
+  { sharePath = "smb://sinkhole.local/Backups", mountPoint = "/Volumes/Backups" },
+  { sharePath = "smb://sinkhole.local/incoming", mountPoint = "/Volumes/incoming" },
+  { sharePath = "smb://sinkhole.local/Media", mountPoint = "/Volumes/Media" },
+}
+
+function mountNetworkShares()
+  for _, share in ipairs(shares) do
+      -- Check if the mount point exists
+      if hs.fs.attributes(share.mountPoint) then
+          hs.alert("Share already mounted: " .. share.mountPoint)
+      else
+          -- AppleScript to mount the share without prompting for credentials
+          local script = [[
+              tell application "Finder"
+                  try
+                      mount volume "]] .. share.sharePath .. [["
+                  on error errMsg
+                      return "Error: " & errMsg
+                  end try
+              end tell
+          ]]
+          
+          -- Execute the AppleScript
+          local success, output, _ = hs.osascript.applescript(script)
+          if success then
+              hs.alert("Mounted: " .. share.mountPoint)
+          else
+              hs.alert("Failed to mount " .. share.mountPoint .. ": " .. output)
+          end
+      end
+  end
+end
+-- Function to mount all network shares in the list ----------------------------------
 
 -- Autmatic reload when hammerspoon config changes
 function reloadConfig(files)
