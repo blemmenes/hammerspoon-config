@@ -76,6 +76,10 @@ HyperModal
     yabai({"-m", "window", "--toggle", "zoom-fullscreen"})
     HyperModal:exit()
   end)
+  :bind('', "m", function()
+    yabai({"-m", "window", "--minimize"})
+    HyperModal:exit()
+  end)
   :bind('', "h", function()
     yabai({"-m", "window", "--swap", "west"})
     HyperModal:exit()
@@ -336,11 +340,8 @@ Install:andUse("URLDispatcher",
                {
                  config = {
                    url_patterns = {
-                    --  { "https?://jira%.work%.com",      JiraApp },
                      { "https://softiron.zendesk.com",      ZendeskApp },
-                    --  { "https?://app.*%.opsgenie%.com", OpsGenieApp },
-                     { "msteams:",                      "com.microsoft.teams" },
-                     { "https?://.*%.softiron%.com",        workApp }
+                     { "msteams:",                      "com.microsoft.teams" }
                    },
                    url_redir_decoders = {
                      -- Send MS Teams URLs directly to the app
